@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>web-Pro-MH | لوحة التحكم</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        window.enteredPin = "";
+        window.pinPress = function(val) {
+            if (window.enteredPin.length < 6) {
+                window.enteredPin += val;
+                updateDots();
+            }
+        };
+        window.pinBackspace = function() {
+            window.enteredPin = window.enteredPin.slice(0, -1);
+            updateDots();
+        };
+        function updateDots() {
+            for (let i = 1; i <= 4; i++) {
+                const dot = document.getElementById('dot-' + i);
+                if (dot) {
+                    if (i <= window.enteredPin.length) dot.classList.add('active');
+                    else dot.classList.remove('active');
+                }
+            }
+        }
+        window.pinSubmit = function() {
+            // This will be handled by the logic in main.js once loaded
+            // but we provide a fallback or trigger here
+            if (window.handlePinSubmit) window.handlePinSubmit();
+        };
+    </script>
+</head>
+<body>
+    <!-- PIN Overlay (Premium Glassmorphism Design) -->
+    <div class="modal-overlay" id="pin-overlay" style="display: flex; z-index: 99999; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px);">
+        <div class="pin-container" style="text-align: center; width: 100%; max-width: 400px; padding: 40px; animation: fadeIn 0.5s ease;">
+            <div class="pin-logo" style="margin-bottom: 30px;">
+                <div style="width: 80px; height: 80px; background: var(--accent); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto; box-shadow: 0 0 30px var(--accent-glow);">
+                    <i class="fas fa-lock" style="color: white; font-size: 32px;"></i>
+                </div>
+                <h2 style="margin-top: 20px; font-weight: 800; letter-spacing: 1px;">أهلاً بك مجدداً</h2>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-top: 5px;">يرجى إدخال رمز الأمان للوصول للوحة التحكم</p>
+            </div>
+            
+            <div class="pin-dots" style="display: flex; justify-content: center; gap: 15px; margin-bottom: 40px;">
+                <div class="pin-dot" id="dot-1" style="width: 15px; height: 15px; border-radius: 50%; border: 2px solid var(--accent); transition: all 0.2s;"></div>
+                <div class="pin-dot" id="dot-2" style="width: 15px; height: 15px; border-radius: 50%; border: 2px solid var(--accent); transition: all 0.2s;"></div>
+                <div class="pin-dot" id="dot-3" style="width: 15px; height: 15px; border-radius: 50%; border: 2px solid var(--accent); transition: all 0.2s;"></div>
+                <div class="pin-dot" id="dot-4" style="width: 15px; height: 15px; border-radius: 50%; border: 2px solid var(--accent); transition: all 0.2s;"></div>
+            </div>
+
+            <div class="pin-numpad" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; justify-items: center;">
+                <button class="numpad-btn" onclick="window.pinPress('1')">1</button>
+                <button class="numpad-btn" onclick="window.pinPress('2')">2</button>
+                <button class="numpad-btn" onclick="window.pinPress('3')">3</button>
+                <button class="numpad-btn" onclick="window.pinPress('4')">4</button>
+                <button class="numpad-btn" onclick="window.pinPress('5')">5</button>
+                <button class="numpad-btn" onclick="window.pinPress('6')">6</button>
+                <button class="numpad-btn" onclick="window.pinPress('7')">7</button>
+                <button class="numpad-btn" onclick="window.pinPress('8')">8</button>
+                <button class="numpad-btn" onclick="window.pinPress('9')">9</button>
+                <button class="numpad-btn action" onclick="window.pinBackspace()"><i class="fas fa-backspace"></i></button>
+                <button class="numpad-btn" onclick="window.pinPress('0')">0</button>
+                <button class="numpad-btn action success" onclick="window.pinSubmit()"><i class="fas fa-check"></i></button>
+            </div>
+            
+            <p id="pin-error-msg" style="color: var(--danger); margin-top: 25px; font-weight: 700; min-height: 24px;"></p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="user-info">
+            <h1 id="greeting">مساء الخير</h1>
+            <p style="color: var(--accent);">مرحباً المدير العام (مدير النظام)</p>
+        </div>
+        <div class="header-actions">
+            <!-- New Key Button (+) Red -->
+            <button class="btn btn-danger" id="btn-new-key" title="إنشاء مفتاح" onclick="window.showModal('modal-new-key'); document.getElementById('display-new-key').innerText = window.generateKey();">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </button>
+            <!-- Theme Toggle -->
+            <button class="btn btn-ghost" id="theme-toggle" title="تبديل الوضع" onclick="window.toggleTheme()">
+                <span id="theme-icon-svg">
+                    <!-- SVG injected by JS -->
+                </span>
+            </button>
+            <!-- View All Keys -->
+            <button class="btn btn-ghost" id="btn-view-keys" title="إدارة المفاتيح" onclick="window.showModal('modal-keys')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3L15.5 7.5z"></path></svg>
+            </button>
+            <!-- Settings -->
+            <button class="btn btn-ghost" id="btn-settings" title="الإعدادات" onclick="window.showModal('modal-settings')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="app-container">
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card" data-filter="all">
+                <div class="stat-icon" style="background: rgba(14, 165, 233, 0.1); color: var(--accent);">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="stat-total">0</h3>
+                    <p>الكل</p>
+                </div>
+            </div>
+            <div class="stat-card" data-filter="active">
+                <div class="stat-icon" style="background: rgba(34, 197, 94, 0.1); color: var(--success);">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="stat-active">0</h3>
+                    <p>نشط</p>
+                </div>
+            </div>
+            <div class="stat-card" data-filter="warning">
+                <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="stat-warning">0</h3>
+                    <p>ينتهي قريب</p>
+                </div>
+            </div>
+            <div class="stat-card" data-filter="expired">
+                <div class="stat-icon" style="background: rgba(239, 68, 68, 0.1); color: var(--danger);">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="stat-expired">0</h3>
+                    <p>منتهي</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls Bar -->
+        <div class="controls-bar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-input" placeholder="ابحث عن متجر أو رقم جوال...">
+            </div>
+            <div class="chips-container" id="filter-chips">
+                <div class="chip active" data-range="all">الكل</div>
+                <div class="chip" data-range="7">7 أيام</div>
+                <div class="chip" data-range="30">30 يوم</div>
+                <div class="chip" data-range="90">90 يوم</div>
+                <div class="chip" data-range="expired">منتهي</div>
+            </div>
+        </div>
+
+        <!-- Store Grid -->
+        <div class="store-grid" id="store-list">
+            <!-- Data injected by main.js -->
+        </div>
+    </main>
+
+    <!-- Modals -->
+    
+    <!-- Modal: New Key -->
+    <div class="modal-overlay" id="modal-new-key">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إنشاء مفتاح ترخيص جديد</h3>
+                <i class="fas fa-times close-modal" style="cursor: pointer;"></i>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label>مدة الترخيص</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" id="new-key-value" value="30" style="flex: 1.5;">
+                        <select id="new-key-unit" style="flex: 1;">
+                            <option value="hours">ساعة</option>
+                            <option value="days" selected>يوم</option>
+                            <option value="months">شهر</option>
+                            <option value="years">سنة</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="key-display-box" style="background: var(--bg-color); padding: 20px; border-radius: 15px; border: 2px dashed var(--accent); text-align: center; margin-bottom: 25px;">
+                    <span id="display-new-key" style="font-family: monospace; font-size: 20px; font-weight: 800; color: var(--accent);">NGP-XXXX-XXXX-XXXX</span>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn btn-primary" id="save-new-key" style="flex: 2; justify-content: center;">حفظ وتفعيل</button>
+                    <button class="btn btn-ghost close-modal" style="flex: 1; justify-content: center;">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Extend -->
+    <div class="modal-overlay" id="modal-extend">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تمديد ترخيص المتجر</h3>
+                <i class="fas fa-times close-modal" style="cursor: pointer;"></i>
+            </div>
+            <div class="modal-body">
+                <h4 id="extend-store-name" style="color: var(--accent); margin-bottom: 20px;"></h4>
+                <div class="input-group">
+                    <label>تاريخ الانتهاء الجديد</label>
+                    <input type="date" id="extend-new-date">
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn btn-primary" id="save-extension" style="flex: 2; justify-content: center;">تحديث التاريخ</button>
+                    <button class="btn btn-ghost close-modal" style="flex: 1; justify-content: center;">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Store Details -->
+    <div class="modal-overlay" id="modal-store-details">
+        <div class="modal-content" style="max-width: 800px; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <h3>تفاصيل المتجر وإدارة الحساب</h3>
+                <i class="fas fa-times close-modal" style="cursor: pointer;"></i>
+            </div>
+            <div class="modal-body" style="padding: 20px; max-height: 80vh; overflow-y: auto;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+                    <!-- Basic Info -->
+                    <div style="border-left: 1px solid var(--border-color); padding-left: 20px;">
+                        <h4 style="margin-bottom: 15px; color: var(--accent); border-bottom: 2px solid var(--accent); width: fit-content;">البيانات الأساسية</h4>
+                        <div class="input-group"><label>اسم المتجر</label><input type="text" id="det-name"></div>
+                        <div class="input-group"><label>رقم الهاتف (للدخول)</label><input type="text" id="det-phone"></div>
+                        <div class="input-group"><label>كلمة المرور</label><input type="text" id="det-pass"></div>
+                        <div class="input-group"><label>الحد الأقصى للمساحة (MB)</label><input type="number" id="det-storage-limit"></div>
+                        <div class="input-group"><label>تاريخ الانتهاء</label><input type="date" id="det-expiry"></div>
+                        <div class="input-group">
+                            <label>المفتاح المستخدم</label>
+                            <div id="det-used-key" style="background: var(--input-bg); padding: 10px; border-radius: 8px; font-family: monospace; font-size: 0.9rem;"></div>
+                        </div>
+                        <button class="btn btn-primary" id="btn-det-save" style="width: 100%; justify-content: center; margin-top: 10px;">حفظ التعديلات</button>
+                    </div>
+                    <!-- Staff & Management -->
+                    <div>
+                        <h4 style="margin-bottom: 15px; color: var(--accent); border-bottom: 2px solid var(--accent); width: fit-content;">إدارة الموظفين</h4>
+                        <div style="background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px; max-height: 300px; overflow-y: auto;">
+                            <table style="width: 100%; font-size: 13px; border-collapse: collapse;">
+                                <thead style="background: var(--card-bg); position: sticky; top: 0;">
+                                    <tr><th style="padding: 8px; text-align: right;">الاسم</th><th style="padding: 8px; text-align: right;">الكود</th><th style="padding: 8px; text-align: center;">حذف</th></tr>
+                                </thead>
+                                <tbody id="det-staff-list"></tbody>
+                            </table>
+                        </div>
+                        <div style="margin-top: 15px; display: flex; gap: 8px;">
+                            <button class="btn btn-danger" id="btn-det-clear-staff" style="flex: 1; justify-content: center; font-size: 0.8rem;">حذف الكل</button>
+                            <button class="btn btn-ghost" id="btn-det-export" style="flex: 1; justify-content: center; font-size: 0.8rem;">تصدير Excel</button>
+                        </div>
+                        <div style="margin-top: 30px; padding: 20px; border: 2px dashed var(--danger); border-radius: 15px; text-align: center;">
+                            <h5 style="color: var(--danger); margin-bottom: 10px;">منطقة خطر</h5>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 15px;">حذف الحساب سيؤدي لمسح كافة البيانات وإيقاف التطبيق عند العميل فوراً.</p>
+                            <button class="btn btn-danger" id="btn-det-delete-account" style="width: 100%; justify-content: center;">حذف الحساب نهائياً</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding: 20px; background: var(--bg-color); border-top: 1px solid var(--border-color); display: flex; gap: 15px; justify-content: flex-end;">
+                <button class="btn btn-ghost close-modal" style="padding: 10px 25px;">إلغاء</button>
+                <button class="btn btn-primary" id="btn-det-save" style="padding: 10px 30px;">حفظ التغييرات</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: View Keys -->
+    <div class="modal-overlay" id="modal-keys">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header"><h3>المفاتيح المنشأة</h3><i class="fas fa-times close-modal"></i></div>
+            <div class="modal-body">
+                <div style="max-height: 400px; overflow-y: auto;">
+                    <table style="width: 100%; text-align: right;">
+                        <thead style="background: var(--bg-color);">
+                            <tr><th style="padding: 10px;">المفتاح</th><th style="padding: 10px;">الانتهاء</th><th style="padding: 10px;">الحالة</th><th style="padding: 10px;">إجراء</th></tr>
+                        </thead>
+                        <tbody id="keys-table-body"></tbody>
+                    </table>
+                </div>
+                <button class="btn btn-ghost close-modal" style="width: 100%; justify-content: center; margin-top: 20px;">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Settings -->
+    <div class="modal-overlay" id="modal-settings">
+        <div class="modal-content">
+            <div class="modal-header"><h3>إعدادات النظام</h3><i class="fas fa-times close-modal"></i></div>
+            <div class="modal-body">
+                <div class="input-group"><label>رمز القفل الجديد (4-6 أرقام)</label><input type="password" id="settings-pin"></div>
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+                    <button class="btn btn-primary" id="save-settings" style="justify-content: center;">حفظ الرمز الجديد</button>
+                    <button class="btn btn-ghost" id="btn-export-all" style="justify-content: center;"><i class="fas fa-file-excel"></i> تصدير كل المتاجر (Excel)</button>
+                    <button class="btn btn-danger" id="btn-bulk-delete" style="justify-content: center;"><i class="fas fa-trash-alt"></i> حذف جماعي للحسابات المنتهية</button>
+                    <button class="btn btn-ghost close-modal" style="justify-content: center; border-color: var(--danger); color: var(--danger);">إلغاء وإغلاق</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
+    <script src="main.js?v=1.0.2"></script>
+</body>
+</html>
